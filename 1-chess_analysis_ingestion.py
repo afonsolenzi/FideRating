@@ -63,6 +63,9 @@ for key, value in dic.items():
     temp_df = pd.read_html(url)[6]
 
 
+  #only desired columns
+  temp_df = temp_df.filter(['Period','GMS','RTNG'], axis=1)
+    
   #add col Name
   temp_df['Name']= key
   
