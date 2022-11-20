@@ -42,13 +42,12 @@ appended_data = []
 for key, value in dic.items():
   url = f'https://ratings.fide.com/profile/{value}'
   
-  #geralmente o comando pd.read_html(url)[6] funciona pra extrair o df do rating
-  #mas para algumas exceções o comando muda
+  #exceptions created to few players
   exceptions1 = ['carlsen','nakamura','caruana','nepo','so','aronian','perez',\
                  'mamedyarov','mvl','karjakin','radjabov','grischuk','topalov',\
                  'hao','harikrishna','sargissian','sjugirov','bu','eljanov','tomashevsky',\
                  'wojtaszek','adams']
-  exceptions2 = ['anand']
+  exceptions2 = ['anand','yi','cheparinov']
   exceptions3 = ['andreikin','nikita']
   exceptions4 = ['alekseenko']
 
@@ -64,33 +63,33 @@ for key, value in dic.items():
     temp_df = pd.read_html(url)[6]
 
 
-  #add coluna Name
+  #add col Name
   temp_df['Name']= key
   
-  #add coluna key
+  #add col key
   temp_df['FideID']= value   
       
-  #inverter para ascendente
-  temp_df = temp_df.sort_values(by=["Period"])[["Period", "RTNG","GMS","Name","FideID"]]
+  #invert  
+  temp_df = temp_df.sort_index(ascending=False)
   temp_df.insert(0, 'time_playing', range(1, 1 + len(temp_df)))
 
-  #nova coluna com variação da coluna de RTNG
+  #RTNG diff
   temp_df['rtng_diff'] = temp_df['RTNG'].diff()
   temp_df['rtng_diff'] = temp_df['rtng_diff'].fillna(0)
     
-  #nova coluna ratio jogos/rating
+  #GMS/RTNG
   temp_df["ratio"] = temp_df["GMS"]/temp_df["RTNG"]
 
-  #add ao df 
+  #append
   appended_data.append(temp_df)
 
-#add o tempview ao df
+#create dataframe with all players
 fidedf = pd.concat(appended_data)
 
-#converter a coluna para data
+#convert Period
 fidedf['Period'] = pd.to_datetime(fidedf['Period'])
 
-#colocar a coluna RTNG como ultima coluna para facilitar o slicing
+#Put RTNG in the end of dataframe
 fidedf['Rating'] = fidedf['RTNG'] * 1
 fidedf.drop(['RTNG'], axis=1, inplace=True)
 
