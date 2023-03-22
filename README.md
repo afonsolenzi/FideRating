@@ -3,4 +3,4 @@ TCC Big Data e Data Science Puc Minas
 
 Fluxo do trabalho:
 
-![Screenshot](tcc flow.jpg)
+![Screenshot](tcc_flow.jpg)
